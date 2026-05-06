@@ -13,6 +13,8 @@ const SVGPlotOverlay = () => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showInstructions, setShowInstructions] = useState(true)
+  const [lastTouchDistance, setLastTouchDistance] = useState(0)
+  const [initialZoom, setInitialZoom] = useState(1)
   const imageRef = useRef(null)
   const containerRef = useRef(null)
   const fullscreenRef = useRef(null)
@@ -29,14 +31,6 @@ const SVGPlotOverlay = () => {
     // Add passive event listeners for better performance
     const container = containerRef.current
     if (container) {
-      const handleTouchMovePassive = (e) => {
-        if (!isDragging || e.touches.length !== 1) return
-        setPan({
-          x: e.touches[0].clientX - dragStart.x,
-          y: e.touches[0].clientY - dragStart.y
-        })
-      }
-
       const handleWheelPassive = (e) => {
         e.preventDefault()
         const delta = e.deltaY > 0 ? 0.9 : 1.1
@@ -44,15 +38,13 @@ const SVGPlotOverlay = () => {
       }
 
       // Add event listeners with proper options
-      container.addEventListener('touchmove', handleTouchMovePassive, { passive: false })
       container.addEventListener('wheel', handleWheelPassive, { passive: false })
 
       return () => {
-        container.removeEventListener('touchmove', handleTouchMovePassive)
         container.removeEventListener('wheel', handleWheelPassive)
       }
     }
-  }, [isDragging, dragStart])
+  }, [])
 
   const handleImageLoad = (e) => {
     setImageDimensions({
@@ -85,27 +77,42 @@ const SVGPlotOverlay = () => {
 
   const toggleFullscreen = () => {
     if (!isFullscreen) {
-      // Enter fullscreen
-      if (fullscreenRef.current?.requestFullscreen) {
-        fullscreenRef.current.requestFullscreen()
-      } else if (fullscreenRef.current?.webkitRequestFullscreen) {
-        fullscreenRef.current.webkitRequestFullscreen()
-      } else if (fullscreenRef.current?.mozRequestFullScreen) {
-        fullscreenRef.current.mozRequestFullScreen()
+      // For mobile, use a different approach
+      if (window.innerWidth <= 768) {
+        // Mobile fullscreen simulation
+        setIsFullscreen(true)
+        document.body.style.overflow = 'hidden'
+        // Try native fullscreen if available
+        if (fullscreenRef.current?.requestFullscreen) {
+          fullscreenRef.current.requestFullscreen().catch(() => {
+            // Fallback to CSS fullscreen
+            console.log('Native fullscreen not available, using CSS fullscreen')
+          })
+        }
+      } else {
+        // Desktop fullscreen
+        if (fullscreenRef.current?.requestFullscreen) {
+          fullscreenRef.current.requestFullscreen()
+        } else if (fullscreenRef.current?.webkitRequestFullscreen) {
+          fullscreenRef.current.webkitRequestFullscreen()
+        } else if (fullscreenRef.current?.mozRequestFullScreen) {
+          fullscreenRef.current.mozRequestFullScreen()
+        }
+        setIsFullscreen(true)
       }
-      setIsFullscreen(true)
       setZoom(1)
       setPan({ x: 0, y: 0 })
     } else {
       // Exit fullscreen
+      setIsFullscreen(false)
+      document.body.style.overflow = 'auto'
       if (document.exitFullscreen) {
-        document.exitFullscreen()
+        document.exitFullscreen().catch(() => {})
       } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen()
       } else if (document.mozCancelFullScreen) {
         document.mozCancelFullScreen()
       }
-      setIsFullscreen(false)
     }
   }
 
@@ -148,16 +155,57 @@ const SVGPlotOverlay = () => {
 
   const handleTouchStart = (e) => {
     if (e.touches.length === 1) {
+      // Single touch - pan
       setIsDragging(true)
       setDragStart({
         x: e.touches[0].clientX - pan.x,
         y: e.touches[0].clientY - pan.y
       })
+    } else if (e.touches.length === 2) {
+      // Two touches - pinch to zoom
+      setIsDragging(false)
+      const touch1 = e.touches[0]
+      const touch2 = e.touches[1]
+      const distance = Math.sqrt(
+        Math.pow(touch2.clientX - touch1.clientX, 2) + 
+        Math.pow(touch2.clientY - touch1.clientY, 2)
+      )
+      setLastTouchDistance(distance)
+      setInitialZoom(zoom)
     }
   }
 
-  const handleTouchEnd = () => {
+  const handleTouchMove = (e) => {
+    e.preventDefault()
+    
+    if (e.touches.length === 1 && isDragging) {
+      // Single touch - pan
+      setPan({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y
+      })
+    } else if (e.touches.length === 2) {
+      // Two touches - pinch to zoom
+      const touch1 = e.touches[0]
+      const touch2 = e.touches[1]
+      const distance = Math.sqrt(
+        Math.pow(touch2.clientX - touch1.clientX, 2) + 
+        Math.pow(touch2.clientY - touch1.clientY, 2)
+      )
+      
+      if (lastTouchDistance > 0) {
+        const scale = distance / lastTouchDistance
+        const newZoom = Math.max(0.5, Math.min(5, initialZoom * scale))
+        setZoom(newZoom)
+      }
+    }
+  }
+
+  const handleTouchEnd = (e) => {
     setIsDragging(false)
+    if (e.touches.length < 2) {
+      setLastTouchDistance(0)
+    }
   }
 
   // ACCURATE coordinates from your manual mapping - ALL PLOTS
@@ -343,7 +391,7 @@ const SVGPlotOverlay = () => {
           ref={fullscreenRef}
           className={`relative mx-auto mb-8 rounded-2xl overflow-hidden shadow-2xl bg-gray-100 transition-all duration-300 ${
             isFullscreen 
-              ? 'fixed inset-0 z-50 rounded-none max-w-none bg-black' 
+              ? 'fixed inset-0 z-50 rounded-none max-w-none bg-black w-screen h-screen' 
               : 'max-w-6xl'
           }`}
         >
@@ -471,10 +519,13 @@ const SVGPlotOverlay = () => {
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             style={{ 
-              touchAction: 'pan-x pan-y',
-              WebkitOverflowScrolling: 'touch'
+              touchAction: 'none',
+              WebkitOverflowScrolling: 'touch',
+              userSelect: 'none',
+              WebkitUserSelect: 'none'
             }}
           >
             {/* Zoomable Content */}
