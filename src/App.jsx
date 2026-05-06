@@ -57,6 +57,9 @@ function App() {
                 <InvestmentCalculator />
               </ErrorBoundary>
               <ErrorBoundary>
+                <QuickBooking />
+              </ErrorBoundary>
+              <ErrorBoundary>
                 <About />
               </ErrorBoundary>
               <ErrorBoundary>

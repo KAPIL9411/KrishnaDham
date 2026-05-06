@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { plotData } from '../data/plotData'
+import { usePlots } from '../hooks/usePlots'
 import { GitCompare, X, Check, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react'
 
 const ComparePlots = () => {
+  const { plots: plotData, loading } = usePlots()
   const [selectedPlots, setSelectedPlots] = useState([])
   const [showComparison, setShowComparison] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -99,9 +100,24 @@ const ComparePlots = () => {
           </button>
         </motion.div>
 
+        {/* Loading State */}
+        {loading && isExpanded && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saffron mx-auto mb-4"></div>
+            <p className="text-charcoal/60">Loading plots...</p>
+          </div>
+        )}
+
+        {/* No Plots Available */}
+        {!loading && isExpanded && availablePlots.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-charcoal/60 text-lg">कोई प्लॉट उपलब्ध नहीं है</p>
+          </div>
+        )}
+
         {/* Expandable Content */}
         <AnimatePresence>
-          {isExpanded && (
+          {isExpanded && !loading && availablePlots.length > 0 && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}

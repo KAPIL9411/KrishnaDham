@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { collection, getDocs, doc, updateDoc, addDoc } from 'firebase/firestore'
 import { signOut } from 'firebase/auth'
 import { db, auth } from '../firebase/config'
-import { uploadAllPlotData, getUploadStats } from '../utils/uploadPlotData'
 import { 
   LogOut, 
   Search, 
@@ -17,8 +16,8 @@ import {
   IndianRupee,
   Calendar,
   User,
-  Upload,
-  Database
+  Mic,
+  MicOff
 } from 'lucide-react'
 
 const AdminDashboard = ({ onLogout }) => {
@@ -29,7 +28,6 @@ const AdminDashboard = ({ onLogout }) => {
   const [statusFilter, setStatusFilter] = useState('all')
   const [editingPlot, setEditingPlot] = useState(null)
   const [showAddForm, setShowAddForm] = useState(false)
-  const [uploading, setUploading] = useState(false)
 
   // Stats
   const [stats, setStats] = useState({
@@ -110,6 +108,7 @@ const AdminDashboard = ({ onLogout }) => {
         facing: editingPlot.facing,
         price: parseInt(editingPlot.price),
         status: editingPlot.status,
+        ownerName: editingPlot.ownerName || '',
         updatedAt: new Date()
       })
       
@@ -141,25 +140,6 @@ const AdminDashboard = ({ onLogout }) => {
     } catch (error) {
       console.error('Error adding plot:', error)
       alert('प्लॉट जोड़ने में त्रुटि!')
-    }
-  }
-
-  const handleUploadAllData = async () => {
-    if (window.confirm('क्या आप सभी 116 प्लॉट्स का डेटा अपलोड करना चाहते हैं? यह मौजूदा डेटा को बदल देगा।')) {
-      setUploading(true)
-      try {
-        const result = await uploadAllPlotData()
-        if (result.success) {
-          alert(result.message)
-          loadPlots() // Reload data
-        } else {
-          alert(result.message)
-        }
-      } catch (error) {
-        alert('डेटा अपलोड करने में त्रुटि!')
-      } finally {
-        setUploading(false)
-      }
     }
   }
 
@@ -325,25 +305,6 @@ const AdminDashboard = ({ onLogout }) => {
             </div>
 
             <div className="flex gap-3">
-              {/* Upload All Data Button */}
-              <button
-                onClick={handleUploadAllData}
-                disabled={uploading}
-                className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {uploading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    अपलोड हो रहा है...
-                  </>
-                ) : (
-                  <>
-                    <Database size={20} />
-                    सभी 116 प्लॉट्स अपलोड करें
-                  </>
-                )}
-              </button>
-
               {/* Add Plot Button */}
               <button
                 onClick={() => setShowAddForm(true)}
@@ -354,19 +315,6 @@ const AdminDashboard = ({ onLogout }) => {
               </button>
             </div>
           </div>
-
-          {/* Upload Stats Info */}
-          {plots.length === 0 && (
-            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2 text-blue-700">
-                <Upload size={20} />
-                <span className="font-semibold">कोई डेटा नहीं मिला!</span>
-              </div>
-              <p className="text-blue-600 text-sm mt-1">
-                सभी 116 प्लॉट्स का डेटा अपलोड करने के लिए ऊपर "सभी 116 प्लॉट्स अपलोड करें" बटन पर क्लिक करें।
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Plots Table */}
@@ -380,6 +328,7 @@ const AdminDashboard = ({ onLogout }) => {
                   <th className="text-left py-4 px-6 font-semibold text-charcoal">दिशा</th>
                   <th className="text-left py-4 px-6 font-semibold text-charcoal">मूल्य (लाख)</th>
                   <th className="text-left py-4 px-6 font-semibold text-charcoal">स्थिति</th>
+                  <th className="text-left py-4 px-6 font-semibold text-charcoal">मालिक का नाम</th>
                   <th className="text-left py-4 px-6 font-semibold text-charcoal">कार्य</th>
                 </tr>
               </thead>
@@ -402,6 +351,16 @@ const AdminDashboard = ({ onLogout }) => {
                       <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(plot.status)}`}>
                         {getStatusText(plot.status)}
                       </span>
+                    </td>
+                    <td className="py-4 px-6 text-charcoal/70">
+                      {(plot.status === 'booked' || plot.status === 'sold') && plot.ownerName ? (
+                        <span className="flex items-center gap-1">
+                          <User size={14} className="text-saffron" />
+                          {plot.ownerName}
+                        </span>
+                      ) : (
+                        <span className="text-charcoal/30">-</span>
+                      )}
                     </td>
                     <td className="py-4 px-6">
                       <button
@@ -449,6 +408,52 @@ const AdminDashboard = ({ onLogout }) => {
 
 // Edit Plot Modal Component
 const EditPlotModal = ({ plot, onSave, onCancel, onChange }) => {
+  const [isListening, setIsListening] = useState(false)
+  const [recognition, setRecognition] = useState(null)
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      const recognitionInstance = new SpeechRecognition()
+      recognitionInstance.continuous = false
+      recognitionInstance.interimResults = false
+      recognitionInstance.lang = 'hi-IN' // Hindi language
+
+      recognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript
+        onChange({ ...plot, ownerName: transcript })
+        setIsListening(false)
+      }
+
+      recognitionInstance.onerror = () => {
+        setIsListening(false)
+      }
+
+      recognitionInstance.onend = () => {
+        setIsListening(false)
+      }
+
+      setRecognition(recognitionInstance)
+    }
+  }, [])
+
+  const startListening = () => {
+    if (recognition) {
+      setIsListening(true)
+      recognition.start()
+    } else {
+      alert('आपका ब्राउज़र Speech Recognition को सपोर्ट नहीं करता')
+    }
+  }
+
+  const stopListening = () => {
+    if (recognition) {
+      recognition.stop()
+      setIsListening(false)
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <motion.div
@@ -531,6 +536,41 @@ const EditPlotModal = ({ plot, onSave, onCancel, onChange }) => {
               <option value="sold">बिक गया</option>
             </select>
           </div>
+
+          {/* Owner Name - Only show for booked/sold plots */}
+          {(plot.status === 'booked' || plot.status === 'sold') && (
+            <div>
+              <label className="block text-charcoal font-semibold mb-2">
+                मालिक का नाम (हिंदी में) {(plot.status === 'booked' || plot.status === 'sold') && '*'}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={plot.ownerName || ''}
+                  onChange={(e) => onChange({ ...plot, ownerName: e.target.value })}
+                  className="w-full px-4 py-3 pr-12 border border-charcoal/20 rounded-lg focus:border-saffron outline-none"
+                  placeholder="राजेश कुमार"
+                />
+                <button
+                  type="button"
+                  onClick={isListening ? stopListening : startListening}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all ${
+                    isListening 
+                      ? 'bg-red-500 text-white animate-pulse' 
+                      : 'bg-gray-100 text-charcoal hover:bg-gray-200'
+                  }`}
+                  title={isListening ? 'बोलना बंद करें' : 'बोलकर नाम बताएं'}
+                >
+                  {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                </button>
+              </div>
+              {isListening && (
+                <p className="text-xs text-red-600 mt-1 animate-pulse">
+                  🎤 सुन रहा हूं... हिंदी में नाम बोलें
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3 mt-8">
@@ -560,8 +600,54 @@ const AddPlotModal = ({ onSave, onCancel }) => {
     area: '',
     facing: 'उत्तर',
     price: '',
-    status: 'available'
+    status: 'available',
+    ownerName: ''
   })
+  const [isListening, setIsListening] = useState(false)
+  const [recognition, setRecognition] = useState(null)
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      const recognitionInstance = new SpeechRecognition()
+      recognitionInstance.continuous = false
+      recognitionInstance.interimResults = false
+      recognitionInstance.lang = 'hi-IN' // Hindi language
+
+      recognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript
+        setNewPlot(prev => ({ ...prev, ownerName: transcript }))
+        setIsListening(false)
+      }
+
+      recognitionInstance.onerror = () => {
+        setIsListening(false)
+      }
+
+      recognitionInstance.onend = () => {
+        setIsListening(false)
+      }
+
+      setRecognition(recognitionInstance)
+    }
+  }, [])
+
+  const startListening = () => {
+    if (recognition) {
+      setIsListening(true)
+      recognition.start()
+    } else {
+      alert('आपका ब्राउज़र Speech Recognition को सपोर्ट नहीं करता')
+    }
+  }
+
+  const stopListening = () => {
+    if (recognition) {
+      recognition.stop()
+      setIsListening(false)
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -658,6 +744,42 @@ const AddPlotModal = ({ onSave, onCancel }) => {
               <option value="sold">बिक गया</option>
             </select>
           </div>
+
+          {/* Owner Name - Only show for booked/sold plots */}
+          {(newPlot.status === 'booked' || newPlot.status === 'sold') && (
+            <div>
+              <label className="block text-charcoal font-semibold mb-2">
+                मालिक का नाम (हिंदी में) {(newPlot.status === 'booked' || newPlot.status === 'sold') && '*'}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={newPlot.ownerName}
+                  onChange={(e) => setNewPlot({ ...newPlot, ownerName: e.target.value })}
+                  className="w-full px-4 py-3 pr-12 border border-charcoal/20 rounded-lg focus:border-saffron outline-none"
+                  placeholder="राजेश कुमार"
+                  required={newPlot.status === 'booked' || newPlot.status === 'sold'}
+                />
+                <button
+                  type="button"
+                  onClick={isListening ? stopListening : startListening}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all ${
+                    isListening 
+                      ? 'bg-red-500 text-white animate-pulse' 
+                      : 'bg-gray-100 text-charcoal hover:bg-gray-200'
+                  }`}
+                  title={isListening ? 'बोलना बंद करें' : 'बोलकर नाम बताएं'}
+                >
+                  {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                </button>
+              </div>
+              {isListening && (
+                <p className="text-xs text-red-600 mt-1 animate-pulse">
+                  🎤 सुन रहा हूं... हिंदी में नाम बोलें
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-3 mt-8">
             <button

@@ -200,40 +200,6 @@ const VideoWalkthrough = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* Quick Actions - Simplified */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="bg-gradient-to-r from-saffron to-gold rounded-xl p-6 text-white text-center max-w-4xl mx-auto"
-        >
-          <h3 className="text-2xl font-display font-bold mb-3">
-            Have Questions?
-          </h3>
-          <p className="text-sm mb-5 opacity-90">
-            Contact us for more information
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="tel:+919876543210"
-              className="bg-white text-saffron px-6 py-3 rounded-full font-semibold hover:bg-ivory transition-all flex items-center gap-2"
-            >
-              <Phone size={18} />
-              Call Now
-            </a>
-            <a
-              href="https://wa.me/919876543210?text=नमस्ते, मैंने वीडियो देखा है। मुझे और जानकारी चाहिए।"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-green-600 transition-all flex items-center gap-2"
-            >
-              <MessageCircle size={18} />
-              WhatsApp
-            </a>
-          </div>
-        </motion.div>
       </div>
 
       {/* Video Modal */}

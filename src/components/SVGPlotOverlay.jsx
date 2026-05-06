@@ -645,6 +645,13 @@ const SVGPlotOverlay = () => {
                     ₹{(selectedPlot.price / 100000).toFixed(2)} लाख
                   </span>
                 </div>
+                {/* Owner Name - Only show for booked/sold plots */}
+                {(selectedPlot.status === 'booked' || selectedPlot.status === 'sold') && selectedPlot.ownerName && (
+                  <div className="flex justify-between items-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+                    <span className="text-charcoal/70 font-medium">मालिक:</span>
+                    <span className="font-bold text-blue-700">{selectedPlot.ownerName}</span>
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}
