@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { plotData } from '../data/plotData'
-import { Download, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
+import { Download, ZoomIn, ZoomOut, RotateCcw, Maximize, Minimize, Info, X } from 'lucide-react'
 
 const SVGPlotOverlay = () => {
   const [selectedPlot, setSelectedPlot] = useState(null)
@@ -11,8 +11,11 @@ const SVGPlotOverlay = () => {
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [showInstructions, setShowInstructions] = useState(true)
   const imageRef = useRef(null)
   const containerRef = useRef(null)
+  const fullscreenRef = useRef(null)
 
   useEffect(() => {
     const img = imageRef.current
@@ -22,7 +25,34 @@ const SVGPlotOverlay = () => {
         height: img.naturalHeight
       })
     }
-  }, [])
+
+    // Add passive event listeners for better performance
+    const container = containerRef.current
+    if (container) {
+      const handleTouchMovePassive = (e) => {
+        if (!isDragging || e.touches.length !== 1) return
+        setPan({
+          x: e.touches[0].clientX - dragStart.x,
+          y: e.touches[0].clientY - dragStart.y
+        })
+      }
+
+      const handleWheelPassive = (e) => {
+        e.preventDefault()
+        const delta = e.deltaY > 0 ? 0.9 : 1.1
+        setZoom(prev => Math.max(0.5, Math.min(5, prev * delta)))
+      }
+
+      // Add event listeners with proper options
+      container.addEventListener('touchmove', handleTouchMovePassive, { passive: false })
+      container.addEventListener('wheel', handleWheelPassive, { passive: false })
+
+      return () => {
+        container.removeEventListener('touchmove', handleTouchMovePassive)
+        container.removeEventListener('wheel', handleWheelPassive)
+      }
+    }
+  }, [isDragging, dragStart])
 
   const handleImageLoad = (e) => {
     setImageDimensions({
@@ -52,6 +82,49 @@ const SVGPlotOverlay = () => {
     setZoom(1)
     setPan({ x: 0, y: 0 })
   }
+
+  const toggleFullscreen = () => {
+    if (!isFullscreen) {
+      // Enter fullscreen
+      if (fullscreenRef.current?.requestFullscreen) {
+        fullscreenRef.current.requestFullscreen()
+      } else if (fullscreenRef.current?.webkitRequestFullscreen) {
+        fullscreenRef.current.webkitRequestFullscreen()
+      } else if (fullscreenRef.current?.mozRequestFullScreen) {
+        fullscreenRef.current.mozRequestFullScreen()
+      }
+      setIsFullscreen(true)
+      setZoom(1)
+      setPan({ x: 0, y: 0 })
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen()
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen()
+      }
+      setIsFullscreen(false)
+    }
+  }
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
+    }
+  }, [])
 
   const handleMouseDown = (e) => {
     setIsDragging(true)
@@ -83,23 +156,8 @@ const SVGPlotOverlay = () => {
     }
   }
 
-  const handleTouchMove = (e) => {
-    if (!isDragging || e.touches.length !== 1) return
-    e.preventDefault()
-    setPan({
-      x: e.touches[0].clientX - dragStart.x,
-      y: e.touches[0].clientY - dragStart.y
-    })
-  }
-
   const handleTouchEnd = () => {
     setIsDragging(false)
-  }
-
-  const handleWheel = (e) => {
-    e.preventDefault()
-    const delta = e.deltaY > 0 ? 0.9 : 1.1
-    setZoom(prev => Math.max(0.5, Math.min(5, prev * delta)))
   }
 
   // ACCURATE coordinates from your manual mapping - ALL PLOTS
@@ -281,55 +339,143 @@ const SVGPlotOverlay = () => {
         </div>
 
         {/* Interactive Sitemap with SVG Overlay */}
-        <div className="relative max-w-6xl mx-auto mb-8 rounded-2xl overflow-hidden shadow-2xl bg-gray-100">
-          {/* Zoom Controls */}
-          <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
-            <button
-              onClick={handleZoomIn}
-              className="bg-white/90 hover:bg-white text-charcoal p-3 rounded-full shadow-lg transition-all"
-              title="Zoom In"
-            >
-              <ZoomIn size={20} />
-            </button>
-            <button
-              onClick={handleZoomOut}
-              className="bg-white/90 hover:bg-white text-charcoal p-3 rounded-full shadow-lg transition-all"
-              title="Zoom Out"
-            >
-              <ZoomOut size={20} />
-            </button>
-            <button
-              onClick={handleReset}
-              className="bg-white/90 hover:bg-white text-charcoal p-3 rounded-full shadow-lg transition-all"
-              title="Reset View"
-            >
-              <RotateCcw size={20} />
-            </button>
+        <div 
+          ref={fullscreenRef}
+          className={`relative mx-auto mb-8 rounded-2xl overflow-hidden shadow-2xl bg-gray-100 transition-all duration-300 ${
+            isFullscreen 
+              ? 'fixed inset-0 z-50 rounded-none max-w-none bg-black' 
+              : 'max-w-6xl'
+          }`}
+        >
+          {/* Enhanced Controls */}
+          <div className={`absolute top-4 right-4 z-20 flex gap-2 ${isFullscreen ? 'flex-col' : 'flex-col'}`}>
+            {/* Zoom Controls */}
+            <div className="flex flex-col gap-2 bg-black/20 backdrop-blur-sm rounded-xl p-2">
+              <button
+                onClick={handleZoomIn}
+                className="bg-white/90 hover:bg-white text-charcoal p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                title="Zoom In"
+              >
+                <ZoomIn size={isFullscreen ? 24 : 20} />
+              </button>
+              <button
+                onClick={handleZoomOut}
+                className="bg-white/90 hover:bg-white text-charcoal p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                title="Zoom Out"
+              >
+                <ZoomOut size={isFullscreen ? 24 : 20} />
+              </button>
+              <button
+                onClick={handleReset}
+                className="bg-white/90 hover:bg-white text-charcoal p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                title="Reset View"
+              >
+                <RotateCcw size={isFullscreen ? 24 : 20} />
+              </button>
+            </div>
+
+            {/* Fullscreen & Info Controls */}
+            <div className="flex flex-col gap-2 bg-black/20 backdrop-blur-sm rounded-xl p-2">
+              <button
+                onClick={toggleFullscreen}
+                className="bg-saffron hover:bg-gold text-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+              >
+                {isFullscreen ? <Minimize size={isFullscreen ? 24 : 20} /> : <Maximize size={isFullscreen ? 24 : 20} />}
+              </button>
+              <button
+                onClick={() => setShowInstructions(!showInstructions)}
+                className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                title="Toggle Instructions"
+              >
+                <Info size={isFullscreen ? 24 : 20} />
+              </button>
+            </div>
           </div>
 
-          {/* Mobile Instructions */}
-          <div className="absolute top-4 left-4 z-20 bg-black/70 text-white px-3 py-2 rounded-lg text-xs md:hidden">
-            📱 Pinch to zoom • Drag to pan
+          {/* Enhanced Instructions */}
+          {showInstructions && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`absolute top-4 left-4 z-20 bg-gradient-to-r from-black/80 to-black/60 backdrop-blur-sm text-white rounded-xl p-4 max-w-xs ${
+                isFullscreen ? 'text-base' : 'text-sm'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-bold text-saffron">नेवीगेशन गाइड</h4>
+                <button
+                  onClick={() => setShowInstructions(false)}
+                  className="text-white/70 hover:text-white"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="space-y-1 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-400">📱</span>
+                  <span>Pinch करें zoom के लिए</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-400">👆</span>
+                  <span>Drag करें move के लिए</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-yellow-400">🎯</span>
+                  <span>Plot पर tap करें details के लिए</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-purple-400">🔍</span>
+                  <span>Fullscreen में बेहतर view</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Zoom Level Indicator */}
+          <div className={`absolute bottom-4 left-4 z-20 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full ${
+            isFullscreen ? 'text-base' : 'text-sm'
+          }`}>
+            <span className="font-semibold">🔍 {zoom.toFixed(1)}x</span>
+            {isFullscreen && <span className="ml-2 text-saffron">• Fullscreen Mode</span>}
           </div>
 
-          {/* Desktop Instructions */}
-          <div className="absolute bottom-4 left-4 z-20 bg-black/70 text-white px-3 py-2 rounded-lg text-xs hidden md:block">
-            🖱️ Scroll to zoom • Drag to pan • Click plot for details
+          {/* Plot Status Legend - Enhanced */}
+          <div className={`absolute bottom-4 right-4 z-20 bg-black/70 backdrop-blur-sm rounded-xl p-3 ${
+            isFullscreen ? 'block' : 'hidden md:block'
+          }`}>
+            <div className="flex gap-4 text-white text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>उपलब्ध</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <span>बुक</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <span>बिक गया</span>
+              </div>
+            </div>
           </div>
 
           {/* Zoomable Container */}
           <div
             ref={containerRef}
-            className="relative w-full h-[400px] md:h-[600px] overflow-hidden cursor-grab active:cursor-grabbing"
+            className={`relative w-full overflow-hidden cursor-grab active:cursor-grabbing ${
+              isFullscreen ? 'h-screen' : 'h-[400px] md:h-[600px]'
+            }`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            onWheel={handleWheel}
-            style={{ touchAction: 'none' }}
+            style={{ 
+              touchAction: 'pan-x pan-y',
+              WebkitOverflowScrolling: 'touch'
+            }}
           >
             {/* Zoomable Content */}
             <div
@@ -396,83 +542,100 @@ const SVGPlotOverlay = () => {
 
         {/* Instructions */}
         <div className="text-center mb-8">
-          <p className="text-charcoal/70 text-lg">
+          <p className="text-charcoal/70 text-lg mb-2">
             💡 किसी भी प्लॉट पर क्लिक करें विस्तृत जानकारी के लिए
           </p>
-          <p className="text-sm text-charcoal/50 mt-2">
-            {Object.keys(plotPolygons).length} plots mapped | Zoom: {zoom.toFixed(1)}x
-          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-charcoal/50">
+            <span>📱 Mobile: Pinch to zoom</span>
+            <span>🖱️ Desktop: Scroll to zoom</span>
+            <span>🔍 Fullscreen available</span>
+            <span>{Object.keys(plotPolygons).length} plots mapped</span>
+          </div>
         </div>
 
-        {/* Download Button */}
+        {/* Enhanced Download Button */}
         <div className="text-center">
-          <button className="inline-flex items-center gap-2 bg-charcoal text-ivory px-8 py-4 rounded-full font-semibold hover:bg-charcoal/80 transition-all shadow-lg">
-            <Download size={20} />
-            लेआउट PDF डाउनलोड करें
-          </button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-charcoal to-charcoal/80 text-ivory px-8 py-4 rounded-full font-semibold hover:from-charcoal/90 hover:to-charcoal transition-all shadow-lg hover:shadow-xl"
+          >
+            <Download size={24} />
+            <span>लेआउट PDF डाउनलोड करें</span>
+          </motion.button>
         </div>
 
-        {/* Selected Plot Modal */}
+        {/* Enhanced Selected Plot Modal */}
         {selectedPlot && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
             onClick={() => setSelectedPlot(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-saffron/20"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-3xl font-display font-bold text-charcoal mb-4">
-                प्लॉट #{selectedPlot.number}
-              </h3>
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between">
-                  <span className="text-charcoal/70">क्षेत्रफल:</span>
-                  <span className="font-semibold text-charcoal">{selectedPlot.area}</span>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-3xl font-display font-bold text-charcoal">
+                  प्लॉट #{selectedPlot.number}
+                </h3>
+                <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                  selectedPlot.status === 'available' ? 'bg-green-100 text-green-700' :
+                  selectedPlot.status === 'sold' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                }`}>
+                  {selectedPlot.status === 'available' ? '✅ उपलब्ध' :
+                   selectedPlot.status === 'sold' ? '❌ बिक गया' : '🟡 बुक किया गया'}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-charcoal/70">दिशा:</span>
-                  <span className="font-semibold text-charcoal">{selectedPlot.facing}</span>
+              </div>
+
+              {/* Details */}
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                  <span className="text-charcoal/70 font-medium">क्षेत्रफल:</span>
+                  <span className="font-bold text-charcoal text-lg">{selectedPlot.area}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-charcoal/70">मूल्य:</span>
-                  <span className="font-semibold text-saffron text-xl">
+                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                  <span className="text-charcoal/70 font-medium">दिशा:</span>
+                  <span className="font-bold text-charcoal">{selectedPlot.facing}</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-gradient-to-r from-saffron/10 to-gold/10 rounded-xl border border-saffron/20">
+                  <span className="text-charcoal/70 font-medium">मूल्य:</span>
+                  <span className="font-bold text-saffron text-2xl">
                     ₹{(selectedPlot.price / 100000).toFixed(2)} लाख
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-charcoal/70">स्थिति:</span>
-                  <span className={`font-semibold ${
-                    selectedPlot.status === 'available' ? 'text-green-600' :
-                    selectedPlot.status === 'sold' ? 'text-red-600' : 'text-yellow-600'
-                  }`}>
-                    {selectedPlot.status === 'available' ? '✅ उपलब्ध' :
-                     selectedPlot.status === 'sold' ? '❌ बिक गया' : '🟡 बुक किया गया'}
                   </span>
                 </div>
               </div>
 
-              {selectedPlot.status === 'available' && (
-                <a
-                  href={`https://wa.me/919876543210?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी में प्लॉट ${selectedPlot.number} में रुचि है`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full bg-saffron text-ivory text-center px-6 py-3 rounded-full font-semibold hover:bg-gold transition-all mb-3"
-                >
-                  WhatsApp पर पूछताछ करें
-                </a>
-              )}
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                {selectedPlot.status === 'available' && (
+                  <motion.a
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    href={`https://wa.me/919876543210?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी में प्लॉट ${selectedPlot.number} में रुचि है`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white text-center px-6 py-4 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg flex items-center justify-center gap-2"
+                  >
+                    <span>📱</span>
+                    WhatsApp पर पूछताछ करें
+                  </motion.a>
+                )}
 
-              <button
-                onClick={() => setSelectedPlot(null)}
-                className="w-full bg-charcoal/10 text-charcoal px-6 py-3 rounded-full font-semibold hover:bg-charcoal/20 transition-all"
-              >
-                बंद करें
-              </button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedPlot(null)}
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-charcoal px-6 py-4 rounded-xl font-semibold transition-all"
+                >
+                  बंद करें
+                </motion.button>
+              </div>
             </motion.div>
           </motion.div>
         )}
