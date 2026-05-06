@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, Phone, Mail, MapPin, CheckCircle } from 'lucide-react'
+import { Send, Phone, Mail, MapPin, CheckCircle, Clock } from 'lucide-react'
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +32,7 @@ const ContactForm = () => {
       setIsSubmitted(true)
       
       // WhatsApp notification
-      const message = `New Inquiry from ${formData.name}%0APhone: ${formData.phone}%0AEmail: ${formData.email}%0ACity: ${formData.city}%0APlot Interest: ${formData.plotInterest}%0ABudget: ${formData.budget}%0AMessage: ${formData.message}`
+      const message = `नई पूछताछ ${formData.name} से%0Aफोन: ${formData.phone}%0Aईमेल: ${formData.email}%0Aशहर: ${formData.city}%0Aप्लॉट रुचि: ${formData.plotInterest}%0Aबजट: ${formData.budget}%0Aसंदेश: ${formData.message}`
       window.open(`https://wa.me/919876543210?text=${message}`, '_blank')
 
       // Reset form
@@ -52,217 +52,220 @@ const ContactForm = () => {
   }
 
   return (
-    <section id="contact" className="py-20 bg-ivory">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-12 md:py-20 bg-ivory w-full overflow-x-hidden">
+      <div className="container mx-auto px-4 w-full max-w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-5xl md:text-6xl font-display font-bold text-charcoal mb-4">
-            Get In Touch
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-charcoal mb-3 md:mb-4">
+            संपर्क में रहें
           </h2>
-          <p className="text-xl text-charcoal/70">
-            Book your site visit or request more information
+          <p className="text-base sm:text-lg md:text-xl text-charcoal/70 px-2">
+            अपनी साइट विजिट बुक करें या अधिक जानकारी का अनुरोध करें
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
+          {/* Mobile-First Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h3 className="text-3xl font-display font-bold text-charcoal mb-8">
-              Contact Information
+            <h3 className="text-2xl md:text-3xl font-display font-bold text-charcoal mb-6 md:mb-8">
+              संपर्क जानकारी
             </h3>
 
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="bg-saffron/10 p-3 rounded-full">
-                  <Phone className="text-saffron" size={24} />
+            <div className="space-y-4 md:space-y-6">
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="bg-saffron/10 p-2 md:p-3 rounded-full flex-shrink-0">
+                  <Phone className="text-saffron" size={20} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-charcoal mb-1">Phone</h4>
-                  <a href="tel:+919876543210" className="text-charcoal/70 hover:text-saffron transition-colors">
+                  <h4 className="font-semibold text-charcoal mb-1 text-sm md:text-base">फोन</h4>
+                  <a href="tel:+919876543210" className="text-charcoal/70 hover:text-saffron transition-colors text-sm md:text-base">
                     +91 98765 43210
                   </a>
                   <br />
-                  <a href="tel:+919876543211" className="text-charcoal/70 hover:text-saffron transition-colors">
+                  <a href="tel:+919876543211" className="text-charcoal/70 hover:text-saffron transition-colors text-sm md:text-base">
                     +91 98765 43211
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="bg-saffron/10 p-3 rounded-full">
-                  <Mail className="text-saffron" size={24} />
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="bg-saffron/10 p-2 md:p-3 rounded-full flex-shrink-0">
+                  <Mail className="text-saffron" size={20} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-charcoal mb-1">Email</h4>
-                  <a href="mailto:info@shreekrishnadham.com" className="text-charcoal/70 hover:text-saffron transition-colors">
+                  <h4 className="font-semibold text-charcoal mb-1 text-sm md:text-base">ईमेल</h4>
+                  <a href="mailto:info@shreekrishnadham.com" className="text-charcoal/70 hover:text-saffron transition-colors text-sm md:text-base">
                     info@shreekrishnadham.com
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="bg-saffron/10 p-3 rounded-full">
-                  <MapPin className="text-saffron" size={24} />
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="bg-saffron/10 p-2 md:p-3 rounded-full flex-shrink-0">
+                  <MapPin className="text-saffron" size={20} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-charcoal mb-1">Address</h4>
-                  <p className="text-charcoal/70">
-                    Nadeli Bahapur Road<br />
-                    Baheri, Bareilly<br />
-                    Uttar Pradesh - 243201
+                  <h4 className="font-semibold text-charcoal mb-1 text-sm md:text-base">पता</h4>
+                  <p className="text-charcoal/70 text-sm md:text-base">
+                    नादेली बहापुर रोड<br />
+                    बहेड़ी, बरेली<br />
+                    उत्तर प्रदेश - 243201
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 bg-gradient-to-r from-saffron to-gold rounded-2xl p-6 text-white">
-              <h4 className="font-display font-bold text-2xl mb-2">Office Hours</h4>
-              <p className="text-lg">Monday - Saturday: 9:00 AM - 7:00 PM</p>
-              <p className="text-lg">Sunday: 10:00 AM - 5:00 PM</p>
+            <div className="mt-6 md:mt-8 bg-gradient-to-r from-saffron to-gold rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
+              <h4 className="font-display font-bold text-lg md:text-2xl mb-2 flex items-center gap-2">
+                <Clock size={24} />
+                कार्यालय समय
+              </h4>
+              <p className="text-sm md:text-lg">सोमवार - शनिवार: सुबह 9:00 - शाम 7:00</p>
+              <p className="text-sm md:text-lg">रविवार: सुबह 10:00 - शाम 5:00</p>
             </div>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Mobile-First Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-3xl p-8 shadow-2xl"
+            className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl"
           >
             {isSubmitted ? (
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-center py-12"
+                className="text-center py-8 md:py-12"
               >
-                <CheckCircle className="text-green-500 mx-auto mb-4" size={80} />
-                <h3 className="text-3xl font-display font-bold text-charcoal mb-4">
-                  Thank You!
+                <CheckCircle className="text-green-500 mx-auto mb-4" size={60} />
+                <h3 className="text-2xl md:text-3xl font-display font-bold text-charcoal mb-4">
+                  धन्यवाद!
                 </h3>
-                <p className="text-lg text-charcoal/70">
-                  Our team will call you within 2 hours
+                <p className="text-base md:text-lg text-charcoal/70">
+                  हमारी टीम 2 घंटे के भीतर आपको कॉल करेगी
                 </p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                 <div>
-                  <label className="block text-charcoal font-semibold mb-2">Name *</label>
+                  <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">नाम *</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors"
-                    placeholder="Your full name"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors text-sm md:text-base"
+                    placeholder="आपका पूरा नाम"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-charcoal font-semibold mb-2">Phone (WhatsApp) *</label>
+                  <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">फोन (WhatsApp) *</label>
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors text-sm md:text-base"
                     placeholder="+91 98765 43210"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-charcoal font-semibold mb-2">Email</label>
+                  <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">ईमेल</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors text-sm md:text-base"
                     placeholder="your@email.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-charcoal font-semibold mb-2">City *</label>
+                  <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">शहर *</label>
                   <input
                     type="text"
                     name="city"
                     value={formData.city}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors"
-                    placeholder="Your city"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors text-sm md:text-base"
+                    placeholder="आपका शहर"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-charcoal font-semibold mb-2">Plot Interest</label>
+                  <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">प्लॉट रुचि</label>
                   <select
                     name="plotInterest"
                     value={formData.plotInterest}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors text-sm md:text-base"
                   >
-                    <option value="">Select plot size</option>
-                    <option value="50 sq yd">50 sq yd</option>
-                    <option value="60 sq yd">60 sq yd</option>
-                    <option value="75 sq yd">75 sq yd</option>
-                    <option value="100 sq yd">100 sq yd</option>
-                    <option value="120 sq yd">120 sq yd</option>
+                    <option value="">प्लॉट साइज़ चुनें</option>
+                    <option value="50 वर्ग गज">50 वर्ग गज</option>
+                    <option value="60 वर्ग गज">60 वर्ग गज</option>
+                    <option value="75 वर्ग गज">75 वर्ग गज</option>
+                    <option value="100 वर्ग गज">100 वर्ग गज</option>
+                    <option value="120 वर्ग गज">120 वर्ग गज</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-charcoal font-semibold mb-2">Budget</label>
+                  <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">बजट</label>
                   <select
                     name="budget"
                     value={formData.budget}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors text-sm md:text-base"
                   >
-                    <option value="">Select budget range</option>
-                    <option value="5-8 Lakhs">₹5-8 Lakhs</option>
-                    <option value="8-10 Lakhs">₹8-10 Lakhs</option>
-                    <option value="10-15 Lakhs">₹10-15 Lakhs</option>
-                    <option value="15+ Lakhs">₹15+ Lakhs</option>
+                    <option value="">बजट रेंज चुनें</option>
+                    <option value="5-8 लाख">₹5-8 लाख</option>
+                    <option value="8-10 लाख">₹8-10 लाख</option>
+                    <option value="10-15 लाख">₹10-15 लाख</option>
+                    <option value="15+ लाख">₹15+ लाख</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-charcoal font-semibold mb-2">Message</label>
+                  <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">संदेश</label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     rows="3"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors resize-none"
-                    placeholder="Any specific requirements..."
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors resize-none text-sm md:text-base"
+                    placeholder="कोई विशिष्ट आवश्यकताएं..."
                   ></textarea>
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-saffron text-ivory px-6 py-4 rounded-full font-semibold hover:bg-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-saffron text-ivory px-4 md:px-6 py-3 md:py-4 rounded-full font-semibold hover:bg-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
                 >
                   {isSubmitting ? (
-                    'Submitting...'
+                    'भेजा जा रहा है...'
                   ) : (
                     <>
-                      <Send size={20} />
-                      Submit Inquiry
+                      <Send size={18} />
+                      पूछताछ भेजें
                     </>
                   )}
                 </button>

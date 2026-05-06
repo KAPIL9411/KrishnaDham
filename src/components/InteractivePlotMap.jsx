@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { plotData, getPlotStats } from '../data/plotData'
+import { usePlots } from '../hooks/usePlots'
 import { Filter, Download, Search } from 'lucide-react'
 
 const InteractivePlotMap = () => {
+  const { plots: plotData, getPlotStats } = usePlots()
   const [selectedPlot, setSelectedPlot] = useState(null)
   const [filterStatus, setFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Calculator, CheckCircle } from 'lucide-react'
 
@@ -17,45 +17,45 @@ const Pricing = () => {
 
   const pricingPlans = [
     {
-      size: '50 sq yd',
+      size: '50 वर्ग गज',
       price: '8.5',
-      features: ['East/West Facing', 'Near Main Road', 'Clear Title', 'Immediate Registry'],
+      features: ['पूर्व/पश्चिम मुखी', 'मुख्य सड़क के पास', 'क्लियर टाइटल', 'तुरंत रजिस्ट्री'],
       popular: false,
     },
     {
-      size: '100 sq yd',
+      size: '100 वर्ग गज',
       price: '10',
-      features: ['Corner Plot Available', 'Wide Road Access', 'Premium Location', 'Vastu Compliant'],
+      features: ['कॉर्नर प्लॉट उपलब्ध', 'चौड़ी सड़क पहुंच', 'प्रीमियम स्थान', 'वास्तु अनुकूल'],
       popular: true,
     },
     {
-      size: '120 sq yd',
+      size: '120 वर्ग गज',
       price: '11',
-      features: ['Prime Location', 'Park Facing', 'Extra Wide Road', 'Best Investment'],
+      features: ['प्राइम लोकेशन', 'पार्क के सामने', 'अतिरिक्त चौड़ी सड़क', 'सर्वोत्तम निवेश'],
       popular: false,
     },
   ]
 
   return (
-    <section id="pricing" className="py-20 bg-gradient-to-b from-charcoal to-charcoal/90">
-      <div className="container mx-auto px-4">
+    <section id="pricing" className="py-12 md:py-20 bg-gradient-to-b from-charcoal to-charcoal/90 w-full overflow-x-hidden">
+      <div className="container mx-auto px-4 w-full max-w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-5xl md:text-6xl font-display font-bold text-ivory mb-4">
-            Pricing & Plans
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-ivory mb-3 md:mb-4">
+            मूल्य निर्धारण और योजनाएं
           </h2>
-          <p className="text-xl text-ivory/70">
-            Flexible payment options and affordable pricing for your dream plot
+          <p className="text-base sm:text-lg md:text-xl text-ivory/70 px-2">
+            आपके सपनों के प्लॉट के लिए लचीले भुगतान विकल्प और किफायती मूल्य निर्धारण
           </p>
         </motion.div>
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        {/* Mobile-First Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-16">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={index}
@@ -63,28 +63,28 @@ const Pricing = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`relative rounded-3xl p-8 ${
+              className={`relative rounded-2xl md:rounded-3xl p-6 md:p-8 ${
                 plan.popular
-                  ? 'bg-gradient-to-br from-saffron to-gold text-white shadow-2xl scale-105'
+                  ? 'bg-gradient-to-br from-saffron to-gold text-white shadow-2xl md:scale-105'
                   : 'bg-ivory text-charcoal shadow-lg'
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-charcoal text-ivory px-6 py-2 rounded-full text-sm font-semibold">
-                  Most Popular
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-charcoal text-ivory px-4 py-1 rounded-full text-xs md:text-sm font-semibold">
+                  सबसे लोकप्रिय
                 </div>
               )}
 
-              <h3 className="text-3xl font-display font-bold mb-2">{plan.size}</h3>
-              <div className="mb-6">
-                <span className="text-5xl font-display font-bold">₹{plan.price}</span>
-                <span className="text-xl opacity-70"> Lakhs</span>
+              <h3 className="text-xl md:text-3xl font-display font-bold mb-2">{plan.size}</h3>
+              <div className="mb-4 md:mb-6">
+                <span className="text-3xl md:text-5xl font-display font-bold">₹{plan.price}</span>
+                <span className="text-lg md:text-xl opacity-70"> लाख</span>
               </div>
 
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8">
                 {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <CheckCircle size={20} className={plan.popular ? 'text-white' : 'text-saffron'} />
+                  <li key={idx} className="flex items-center gap-2 text-sm md:text-base">
+                    <CheckCircle size={16} className={plan.popular ? 'text-white' : 'text-saffron'} />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -92,36 +92,36 @@ const Pricing = () => {
 
               <a
                 href="#contact"
-                className={`block w-full text-center px-6 py-3 rounded-full font-semibold transition-all ${
+                className={`block w-full text-center px-4 md:px-6 py-3 rounded-full font-semibold transition-all text-sm md:text-base ${
                   plan.popular
                     ? 'bg-white text-saffron hover:bg-ivory'
                     : 'bg-saffron text-white hover:bg-gold'
                 }`}
               >
-                Book Now
+                अभी बुक करें
               </a>
             </motion.div>
           ))}
         </div>
 
-        {/* EMI Calculator */}
+        {/* Mobile-First EMI Calculator */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="bg-ivory rounded-3xl p-8 md:p-12 shadow-2xl max-w-4xl mx-auto"
+          className="bg-ivory rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-2xl max-w-4xl mx-auto"
         >
-          <div className="flex items-center gap-3 mb-8">
-            <Calculator className="text-saffron" size={40} />
-            <h3 className="text-3xl font-display font-bold text-charcoal">EMI Calculator</h3>
+          <div className="flex items-center gap-3 mb-6 md:mb-8">
+            <Calculator className="text-saffron" size={32} />
+            <h3 className="text-2xl md:text-3xl font-display font-bold text-charcoal">EMI कैलकुलेटर</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <div className="mb-6">
-                <label className="block text-charcoal font-semibold mb-2">
-                  Loan Amount: ₹{(loanAmount / 100000).toFixed(2)} Lakhs
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+            <div className="space-y-4 md:space-y-6">
+              <div>
+                <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">
+                  लोन राशि: ₹{(loanAmount / 100000).toFixed(2)} लाख
                 </label>
                 <input
                   type="range"
@@ -134,9 +134,9 @@ const Pricing = () => {
                 />
               </div>
 
-              <div className="mb-6">
-                <label className="block text-charcoal font-semibold mb-2">
-                  Interest Rate: {interestRate}% per annum
+              <div>
+                <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">
+                  ब्याज दर: {interestRate}% प्रति वर्ष
                 </label>
                 <input
                   type="range"
@@ -149,9 +149,9 @@ const Pricing = () => {
                 />
               </div>
 
-              <div className="mb-6">
-                <label className="block text-charcoal font-semibold mb-2">
-                  Tenure: {tenure} years
+              <div>
+                <label className="block text-charcoal font-semibold mb-2 text-sm md:text-base">
+                  अवधि: {tenure} साल
                 </label>
                 <input
                   type="range"
@@ -166,19 +166,19 @@ const Pricing = () => {
             </div>
 
             <div className="flex items-center justify-center">
-              <div className="bg-gradient-to-br from-saffron to-gold rounded-3xl p-8 text-center text-white w-full">
-                <p className="text-lg mb-2 opacity-90">Your Monthly EMI</p>
-                <p className="text-6xl font-display font-bold mb-4">₹{calculateEMI()}</p>
-                <p className="text-sm opacity-80">
-                  Total Payment: ₹{((calculateEMI() * tenure * 12) / 100000).toFixed(2)} Lakhs
+              <div className="bg-gradient-to-br from-saffron to-gold rounded-2xl md:rounded-3xl p-6 md:p-8 text-center text-white w-full">
+                <p className="text-sm md:text-lg mb-2 opacity-90">आपकी मासिक EMI</p>
+                <p className="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-4">₹{calculateEMI()}</p>
+                <p className="text-xs md:text-sm opacity-80">
+                  कुल भुगतान: ₹{((calculateEMI() * tenure * 12) / 100000).toFixed(2)} लाख
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 bg-saffron/10 rounded-2xl p-6 text-center">
-            <p className="text-charcoal font-semibold">
-              ⚡ Limited Time Offer: Book now and get special discounts!
+          <div className="mt-6 md:mt-8 bg-saffron/10 rounded-xl md:rounded-2xl p-4 md:p-6 text-center">
+            <p className="text-charcoal font-semibold text-sm md:text-base">
+              ⚡ सीमित समय का ऑफर: अभी बुक करें और विशेष छूट पाएं!
             </p>
           </div>
         </motion.div>

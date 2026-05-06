@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { plotData } from '../data/plotData'
-import { Download, ZoomIn, ZoomOut, RotateCcw, Maximize, Minimize, Info, X } from 'lucide-react'
+import { usePlots } from '../hooks/usePlots'
+import { Download, ZoomIn, ZoomOut, RotateCcw, Maximize, Minimize, Info, Smartphone, Mouse, MessageCircle } from 'lucide-react'
 
 const SVGPlotOverlay = () => {
+  const { plots: plotData } = usePlots()
   const [selectedPlot, setSelectedPlot] = useState(null)
   const [hoveredPlot, setHoveredPlot] = useState(null)
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 })
@@ -12,7 +13,6 @@ const SVGPlotOverlay = () => {
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [showInstructions, setShowInstructions] = useState(true)
   const [lastTouchDistance, setLastTouchDistance] = useState(0)
   const [initialZoom, setInitialZoom] = useState(1)
   const imageRef = useRef(null)
@@ -21,7 +21,7 @@ const SVGPlotOverlay = () => {
 
   useEffect(() => {
     const img = imageRef.current
-    if (img && img.complete) {
+    if (img && img.complete && img.naturalWidth > 0) {
       setImageDimensions({
         width: img.naturalWidth,
         height: img.naturalHeight
@@ -32,16 +32,24 @@ const SVGPlotOverlay = () => {
     const container = containerRef.current
     if (container) {
       const handleWheelPassive = (e) => {
-        e.preventDefault()
-        const delta = e.deltaY > 0 ? 0.9 : 1.1
-        setZoom(prev => Math.max(0.5, Math.min(5, prev * delta)))
+        try {
+          e.preventDefault()
+          const delta = e.deltaY > 0 ? 0.9 : 1.1
+          setZoom(prev => Math.max(0.5, Math.min(5, prev * delta)))
+        } catch (error) {
+          // Silently handle wheel event errors
+        }
       }
 
       // Add event listeners with proper options
       container.addEventListener('wheel', handleWheelPassive, { passive: false })
 
       return () => {
-        container.removeEventListener('wheel', handleWheelPassive)
+        try {
+          container.removeEventListener('wheel', handleWheelPassive)
+        } catch (error) {
+          // Silently handle cleanup errors
+        }
       }
     }
   }, [])
@@ -51,7 +59,7 @@ const SVGPlotOverlay = () => {
       width: e.target.naturalWidth,
       height: e.target.naturalHeight
     })
-    console.log('Image loaded:', e.target.naturalWidth, 'x', e.target.naturalHeight)
+    // Removed console.log for cleaner production build
   }
 
   const handlePlotClick = (plotNumber) => {
@@ -119,17 +127,30 @@ const SVGPlotOverlay = () => {
   // Listen for fullscreen changes
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement)
+      try {
+        setIsFullscreen(!!document.fullscreenElement)
+      } catch (error) {
+        // Silently handle fullscreen change errors
+        setIsFullscreen(false)
+      }
     }
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+    try {
+      document.addEventListener('fullscreenchange', handleFullscreenChange)
+      document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+      document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+    } catch (error) {
+      // Silently handle event listener errors
+    }
 
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
+      try {
+        document.removeEventListener('fullscreenchange', handleFullscreenChange)
+        document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+        document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
+      } catch (error) {
+        // Silently handle cleanup errors
+      }
     }
   }, [])
 
@@ -353,43 +374,43 @@ const SVGPlotOverlay = () => {
   }
 
   return (
-    <section id="plot-map" className="py-20 bg-ivory">
-      <div className="container mx-auto px-4">
+    <section id="plot-map" className="py-12 md:py-20 bg-ivory w-full overflow-x-hidden">
+      <div className="container mx-auto px-4 w-full max-w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <h2 className="text-5xl md:text-6xl font-display font-bold text-charcoal mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-charcoal mb-3 md:mb-4">
             इंटरएक्टिव प्लॉट मैप
           </h2>
-          <p className="text-xl text-charcoal/70">
+          <p className="text-base sm:text-lg md:text-xl text-charcoal/70 px-2">
             विवरण देखने के लिए किसी भी प्लॉट पर क्लिक करें
           </p>
         </motion.div>
 
-        {/* Legend */}
-        <div className="flex flex-wrap gap-6 mb-8 justify-center">
+        {/* Mobile-First Legend */}
+        <div className="flex flex-wrap gap-3 md:gap-6 mb-6 md:mb-8 justify-center">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-green-500 rounded border-2 border-white"></div>
-            <span className="text-sm font-semibold">उपलब्ध</span>
+            <div className="w-4 h-4 md:w-6 md:h-6 bg-green-500 rounded border-2 border-white"></div>
+            <span className="text-xs md:text-sm font-semibold">उपलब्ध</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-yellow-500 rounded border-2 border-white"></div>
-            <span className="text-sm font-semibold">बुक किया गया</span>
+            <div className="w-4 h-4 md:w-6 md:h-6 bg-yellow-500 rounded border-2 border-white"></div>
+            <span className="text-xs md:text-sm font-semibold">बुक किया गया</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-red-500 rounded border-2 border-white"></div>
-            <span className="text-sm font-semibold">बिक गया</span>
+            <div className="w-4 h-4 md:w-6 md:h-6 bg-red-500 rounded border-2 border-white"></div>
+            <span className="text-xs md:text-sm font-semibold">बिक गया</span>
           </div>
         </div>
 
         {/* Interactive Sitemap with SVG Overlay */}
         <div 
           ref={fullscreenRef}
-          className={`relative mx-auto mb-8 rounded-2xl overflow-hidden shadow-2xl bg-gray-100 transition-all duration-300 ${
+          className={`relative mx-auto mb-8 rounded-2xl overflow-hidden shadow-2xl bg-gray-100 transition-all duration-300 w-full max-w-full ${
             isFullscreen 
               ? 'fixed inset-0 z-50 rounded-none max-w-none bg-black w-screen h-screen' 
               : 'max-w-6xl'
@@ -422,7 +443,7 @@ const SVGPlotOverlay = () => {
               </button>
             </div>
 
-            {/* Fullscreen & Info Controls */}
+            {/* Fullscreen Controls */}
             <div className="flex flex-col gap-2 bg-black/20 backdrop-blur-sm rounded-xl p-2">
               <button
                 onClick={toggleFullscreen}
@@ -431,54 +452,8 @@ const SVGPlotOverlay = () => {
               >
                 {isFullscreen ? <Minimize size={isFullscreen ? 24 : 20} /> : <Maximize size={isFullscreen ? 24 : 20} />}
               </button>
-              <button
-                onClick={() => setShowInstructions(!showInstructions)}
-                className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
-                title="Toggle Instructions"
-              >
-                <Info size={isFullscreen ? 24 : 20} />
-              </button>
             </div>
           </div>
-
-          {/* Enhanced Instructions */}
-          {showInstructions && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`absolute top-4 left-4 z-20 bg-gradient-to-r from-black/80 to-black/60 backdrop-blur-sm text-white rounded-xl p-4 max-w-xs ${
-                isFullscreen ? 'text-base' : 'text-sm'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-bold text-saffron">नेवीगेशन गाइड</h4>
-                <button
-                  onClick={() => setShowInstructions(false)}
-                  className="text-white/70 hover:text-white"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <div className="space-y-1 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="text-green-400">📱</span>
-                  <span>Pinch करें zoom के लिए</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-blue-400">👆</span>
-                  <span>Drag करें move के लिए</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-400">🎯</span>
-                  <span>Plot पर tap करें details के लिए</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-purple-400">🔍</span>
-                  <span>Fullscreen में बेहतर view</span>
-                </div>
-              </div>
-            </motion.div>
-          )}
 
           {/* Zoom Level Indicator */}
           <div className={`absolute bottom-4 left-4 z-20 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full ${
@@ -591,15 +566,25 @@ const SVGPlotOverlay = () => {
           </div>
         </div>
 
-        {/* Instructions */}
-        <div className="text-center mb-8">
-          <p className="text-charcoal/70 text-lg mb-2">
-            💡 किसी भी प्लॉट पर क्लिक करें विस्तृत जानकारी के लिए
+        {/* Mobile-Optimized Instructions */}
+        <div className="text-center mb-6 md:mb-8">
+          <p className="text-charcoal/70 text-base md:text-lg mb-2 flex items-center justify-center gap-2">
+            <Info size={20} className="text-saffron" />
+            किसी भी प्लॉट पर क्लिक करें विस्तृत जानकारी के लिए
           </p>
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-charcoal/50">
-            <span>📱 Mobile: Pinch to zoom</span>
-            <span>🖱️ Desktop: Scroll to zoom</span>
-            <span>🔍 Fullscreen available</span>
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4 text-xs md:text-sm text-charcoal/50">
+            <span className="flex items-center gap-1">
+              <Smartphone size={14} />
+              Mobile: Pinch to zoom
+            </span>
+            <span className="flex items-center gap-1">
+              <Mouse size={14} />
+              Desktop: Scroll to zoom
+            </span>
+            <span className="flex items-center gap-1">
+              <Maximize size={14} />
+              Fullscreen available
+            </span>
             <span>{Object.keys(plotPolygons).length} plots mapped</span>
           </div>
         </div>
@@ -673,7 +658,7 @@ const SVGPlotOverlay = () => {
                     rel="noopener noreferrer"
                     className="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white text-center px-6 py-4 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg flex items-center justify-center gap-2"
                   >
-                    <span>📱</span>
+                    <MessageCircle size={20} />
                     WhatsApp पर पूछताछ करें
                   </motion.a>
                 )}

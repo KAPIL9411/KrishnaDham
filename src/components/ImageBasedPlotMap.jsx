@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { plotData } from '../data/plotData'
+import { usePlots } from '../hooks/usePlots'
 import { Download } from 'lucide-react'
 
 const ImageBasedPlotMap = () => {
+  const { plots: plotData } = usePlots()
   const [selectedPlot, setSelectedPlot] = useState(null)
 
   // PRECISE Plot coordinates mapped from the actual sitemap image

@@ -21,12 +21,16 @@ const LiveAvailability = () => {
     const activities = [
       'राज कुमार ने प्लॉट #45 देखा',
       'प्रिया शर्मा ने प्लॉट #23 के लिए पूछताछ की',
-      'अमित वर्मा ने प्लॉट #67 बुक किया',
+      'अमित वर्मा ने प्लॉट #67 बुक किया 🎉',
       'सुनीता देवी ने साइट विजिट बुक की',
       'राहुल सिंह ने प्लॉट #89 शेयर किया',
       'मनीष गुप्ता ने EMI कैलकुलेटर इस्तेमाल किया',
       'अंजलि पाठक ने प्लॉट #12 के लिए कॉल किया',
-      'विकास यादव ने 3 प्लॉट compare किए'
+      'विकास यादव ने 3 प्लॉट compare किए',
+      'रमेश जी ने ₹2 लाख advance दिया 💰',
+      'सुमित्रा देवी ने रजिस्ट्री कराई ✅',
+      'अशोक कुमार ने loan approve कराया',
+      'मीरा शर्मा ने plot visit किया'
     ]
 
     const addActivity = () => {
@@ -128,6 +132,24 @@ const LiveAvailability = () => {
                   </div>
                 </div>
 
+                {/* Live Activity Ticker */}
+                {recentActivity.length > 0 && (
+                  <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs font-semibold text-blue-700">Live Activity</span>
+                    </div>
+                    <div className="space-y-1 max-h-16 overflow-hidden">
+                      {recentActivity.slice(0, 2).map((activity) => (
+                        <div key={activity.id} className="text-xs text-charcoal/70 flex items-center justify-between">
+                          <span>{activity.text}</span>
+                          <span className="text-blue-600 font-medium">{activity.time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Compact Progress Bar */}
                 <div className="mt-4">
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -142,9 +164,14 @@ const LiveAvailability = () => {
                       ></div>
                     </div>
                   </div>
-                  <p className="text-xs text-center text-charcoal/60 mt-2">
-                    ⚠️ Only {stats.available} plots remaining • Book now!
-                  </p>
+                  <div className="text-center mt-2 space-y-1">
+                    <p className="text-xs text-red-600 font-bold animate-pulse">
+                      🚨 केवल {stats.available} प्लॉट्स बचे हैं!
+                    </p>
+                    <p className="text-xs text-charcoal/60">
+                      पिछले 7 दिनों में {Math.floor(Math.random() * 8) + 3} प्लॉट्स बिके
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

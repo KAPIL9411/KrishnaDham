@@ -224,9 +224,14 @@ const EMICalculator = () => {
               </div>
               <div className="bg-white/20 rounded-xl p-4 mt-4">
                 <p className="text-lg font-semibold mb-2">{affordability}</p>
-                <p className="text-sm opacity-90">
-                  EMI आपकी आय का {((emi / monthlyIncome) * 100).toFixed(1)}% है
-                </p>
+                <div className="space-y-1">
+                  <p className="text-sm opacity-90">
+                    EMI आपकी आय का {((emi / monthlyIncome) * 100).toFixed(1)}% है
+                  </p>
+                  <p className="text-xs opacity-80">
+                    💡 रोज़ाना सिर्फ ₹{Math.round(emi/30)} - एक चाय के दाम में अपना घर!
+                  </p>
+                </div>
               </div>
             </div>
 
