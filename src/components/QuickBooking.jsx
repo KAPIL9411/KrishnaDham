@@ -23,7 +23,7 @@ const QuickBooking = () => {
       `कृपया मुझसे जल्दी संपर्क करें। मैं आज ही booking करना चाहता हूं।`
     
     // Open WhatsApp
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank')
+    window.open(`https://wa.me/918279529681?text=${message}`, '_blank')
     
     setIsSubmitted(true)
     
@@ -233,7 +233,11 @@ const QuickBooking = () => {
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="text-green-500 flex-shrink-0 mt-1" size={18} />
-                    <span className="text-charcoal/80">EMI की सुविधा तुरंत मिलेगी</span>
+                    <span className="text-charcoal/80">Registry तुरंत होगी</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="text-green-500 flex-shrink-0 mt-1" size={18} />
+                    <span className="text-charcoal/80">Bank loan में पूरी मदद</span>
                   </li>
                 </ul>
               </div>
@@ -255,10 +259,10 @@ const QuickBooking = () => {
                   या direct call करें:
                 </p>
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+918279529681"
                   className="inline-block bg-saffron text-white px-6 py-3 rounded-full font-semibold hover:bg-gold transition-all"
                 >
-                  📞 +91 98765 43210
+                  📞 +91 82795 29681
                 </a>
               </div>
             </motion.div>

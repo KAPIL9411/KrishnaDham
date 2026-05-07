@@ -33,7 +33,7 @@ const ContactForm = () => {
       
       // WhatsApp notification
       const message = `नई पूछताछ ${formData.name} से%0Aफोन: ${formData.phone}%0Aईमेल: ${formData.email}%0Aशहर: ${formData.city}%0Aप्लॉट रुचि: ${formData.plotInterest}%0Aबजट: ${formData.budget}%0Aसंदेश: ${formData.message}`
-      window.open(`https://wa.me/919876543210?text=${message}`, '_blank')
+      window.open(`https://wa.me/918279529681?text=${message}`, '_blank')
 
       // Reset form
       setTimeout(() => {
@@ -181,7 +181,7 @@ const ContactForm = () => {
                     onChange={handleChange}
                     required
                     className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border-2 border-charcoal/20 focus:border-saffron outline-none transition-colors text-sm md:text-base"
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 82795 29681"
                   />
                 </div>
 

@@ -14,8 +14,8 @@ const VideoWalkthrough = () => {
       thumbnail: '/public/sitemap.webp',
       duration: '5:30',
       views: '2.5K',
-      hdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // Replace with actual video
-      sdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      hdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
+      sdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
       description: 'गेट से लेकर हर रोड और प्लॉट का विस्तृत वीडियो टूर'
     },
     {
@@ -25,8 +25,8 @@ const VideoWalkthrough = () => {
       thumbnail: '/public/sitemap.webp',
       duration: '3:15',
       views: '1.8K',
-      hdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      sdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      hdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
+      sdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
       description: 'ड्रोन से ली गई कॉलोनी की शानदार तस्वीर'
     },
     {
@@ -36,8 +36,8 @@ const VideoWalkthrough = () => {
       thumbnail: '/public/sitemap.webp',
       duration: '4:20',
       views: '1.2K',
-      hdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      sdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      hdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
+      sdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
       description: '25 फीट चौड़ी सड़कें और सभी सुविधाओं का दृश्य'
     },
     {
@@ -47,8 +47,8 @@ const VideoWalkthrough = () => {
       thumbnail: '/public/sitemap.webp',
       duration: '6:45',
       views: '3.1K',
-      hdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      sdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      hdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
+      sdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
       description: 'असली ग्राहकों की राय और अनुभव'
     },
     {
@@ -58,8 +58,8 @@ const VideoWalkthrough = () => {
       thumbnail: '/public/sitemap.webp',
       duration: '3:50',
       views: '980',
-      hdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      sdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      hdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
+      sdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
       description: 'स्कूल, अस्पताल, बाजार - सब कुछ पास में'
     },
     {
@@ -69,8 +69,8 @@ const VideoWalkthrough = () => {
       thumbnail: '/public/sitemap.webp',
       duration: '2:30',
       views: '1.5K',
-      hdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      sdUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      hdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
+      sdUrl: 'https://www.youtube.com/embed/08c-mtq_cUo',
       description: 'विकास कार्य की नवीनतम स्थिति'
     }
   ]
@@ -202,40 +202,32 @@ const VideoWalkthrough = () => {
         </div>
       </div>
 
-      {/* Video Modal */}
+      {/* Video Modal - Professional & Minimal */}
       {selectedVideo && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedVideo(null)}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl"
+            className="relative max-w-6xl w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="bg-gradient-to-r from-saffron to-gold p-4 flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-display font-bold text-white">
-                  {selectedVideo.title}
-                </h3>
-                <p className="text-sm text-white/80">{selectedVideo.titleEn}</p>
-              </div>
-              <button
-                onClick={() => setSelectedVideo(null)}
-                className="bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition-all"
-              >
-                <X size={24} />
-              </button>
-            </div>
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedVideo(null)}
+              className="absolute -top-12 right-0 text-white/80 hover:text-white transition-colors"
+            >
+              <X size={32} />
+            </button>
 
             {/* Video Player */}
-            <div className="aspect-video bg-black">
+            <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
               <iframe
-                src={videoQuality === 'hd' ? selectedVideo.hdUrl : selectedVideo.sdUrl}
+                src={`${videoQuality === 'hd' ? selectedVideo.hdUrl : selectedVideo.sdUrl}?autoplay=1`}
                 title={selectedVideo.title}
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -243,27 +235,10 @@ const VideoWalkthrough = () => {
               ></iframe>
             </div>
 
-            {/* Footer */}
-            <div className="p-4 bg-gray-50">
-              <p className="text-charcoal/70 mb-4">{selectedVideo.description}</p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleShare(selectedVideo)}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-charcoal px-4 py-3 rounded-full font-semibold transition-all flex items-center justify-center gap-2"
-                >
-                  <Share2 size={18} />
-                  Share Video
-                </button>
-                <a
-                  href="https://wa.me/919876543210?text=मैंने वीडियो देखा है। मुझे इस प्लॉट में रुचि है।"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-full font-semibold transition-all flex items-center justify-center gap-2"
-                >
-                  <MessageCircle size={18} />
-                  Inquire on WhatsApp
-                </a>
-              </div>
+            {/* Video Info - Minimal */}
+            <div className="mt-4 text-white">
+              <h3 className="text-xl font-semibold mb-1">{selectedVideo.title}</h3>
+              <p className="text-white/60 text-sm">{selectedVideo.description}</p>
             </div>
           </motion.div>
         </motion.div>

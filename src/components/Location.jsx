@@ -3,12 +3,12 @@ import { MapPin, Navigation, Clock } from 'lucide-react'
 
 const Location = () => {
   const distances = [
-    { place: 'बहेड़ी सिटी सेंटर', distance: '5 km', time: '10 मिनट' },
-    { place: 'राष्ट्रीय राजमार्ग', distance: '2 km', time: '5 मिनट' },
-    { place: 'रेलवे स्टेशन', distance: '8 km', time: '15 मिनट' },
-    { place: 'सरकारी अस्पताल', distance: '4 km', time: '8 मिनट' },
-    { place: 'इंटर कॉलेज', distance: '3 km', time: '7 मिनट' },
-    { place: 'शॉपिंग कॉम्प्लेक्स', distance: '4 km', time: '8 मिनट' },
+    { place: 'बहेड़ी मेन मार्केट', distance: '1 km', time: '3 मिनट' },
+    { place: 'राष्ट्रीय राजमार्ग', distance: '1 km', time: '3 मिनट' },
+    { place: 'रेलवे स्टेशन', distance: '800 m', time: '2 मिनट' },
+    { place: 'सरकारी अस्पताल', distance: '850 m', time: '2 मिनट' },
+    { place: 'इंटर कॉलेज', distance: '50 m', time: '1 मिनट' },
+    { place: 'शॉपिंग कॉम्प्लेक्स', distance: '1 km', time: '3 मिनट' },
   ]
 
   return (

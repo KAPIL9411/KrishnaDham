@@ -1,70 +1,173 @@
-# Shree Krishna Dham Colony - Premium Real Estate Website
+# 🏘️ Shree Krishna Dham Colony - Premium Real Estate Website
 
-A stunning 3D interactive real estate website for Shree Krishna Dham Colony, featuring an immersive 3D walkthrough, interactive plot map, and lead generation tools.
+A modern, feature-rich real estate website for **Shree Krishna Dham Colony** in Baheri, Bareilly with a powerful admin panel for real-time plot management.
 
 ## 🌟 Features
 
-- **3D Virtual Walkthrough**: Interactive Three.js 3D colony visualization with 116+ plots
-- **Interactive Plot Map**: Color-coded plot availability with real-time filtering
-- **Hero Section**: Animated landing page with gradient background and floating particles
-- **About Section**: Project highlights and developer credibility
-- **Amenities**: Modern facilities showcase
-- **Location**: Google Maps integration with distance markers
-- **Gallery**: Image lightbox with video tour
-- **Pricing**: EMI calculator and flexible payment plans
-- **Contact Form**: Lead generation with WhatsApp integration
-- **WhatsApp Button**: Floating quick-message widget
-- **Fully Responsive**: Mobile-first design
+### 🎯 Customer-Facing Features
+- ✅ **Interactive Sitemap** - Click on zones and plots to see details
+- ✅ **Real-time Availability** - Live plot status updates
+- ✅ **Quick Booking** - Instant WhatsApp integration
+- ✅ **Plot Inquiry Form** - Direct customer inquiries
+- ✅ **Video Walkthrough** - Virtual site tour
+- ✅ **Dynamic Testimonials** - Real owner reviews
+- ✅ **Location Details** - Accurate distances to key locations
+- ✅ **Mobile Responsive** - Perfect on all devices
+- ✅ **SEO Optimized** - Ranks for "shree krishna dham colony baheri"
+
+### 🔐 Admin Panel Features
+- ✅ **Zone Management** - Create location zones with custom pricing
+- ✅ **Plot Management** - Add/edit plots with precise coordinates
+- ✅ **Inquiry Dashboard** - Track and manage customer inquiries
+- ✅ **Visual Coordinate Picker** - Click on sitemap to mark locations
+- ✅ **Status Management** - Available/Sold/Booked tracking
+- ✅ **Owner Records** - Track plot owners
+- ✅ **Secure Authentication** - Firebase-based login
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React.js 18 + Vite
+- **Frontend**: React 18 + Vite
 - **Styling**: Tailwind CSS 3
-- **3D Engine**: Three.js + React Three Fiber + Drei
-- **Animation**: GSAP + Framer Motion
+- **Animation**: Framer Motion
 - **Icons**: Lucide React
-- **Backend**: Node.js + Express (for lead forms)
-- **Database**: Supabase (for storing inquiries)
+- **Backend**: Firebase (Firestore + Authentication)
+- **Deployment**: Vercel
+- **Domain**: shreekrishnadham.in
 
 ## 📦 Installation
 
-1. **Clone the repository**
+### 1. Clone the repository
+```bash
+git clone <repository-url>
+cd new-3d
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Setup environment variables
+```bash
+cp .env.example .env.local
+# Edit .env.local with your Firebase credentials
+```
+
+### 4. Start development server
+```bash
+npm run dev
+```
+
+### 5. Build for production
+```bash
+npm run build
+```
+
+## 📚 Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md) | Complete overview & next steps |
+| [QUICK_DEPLOYMENT_STEPS.md](QUICK_DEPLOYMENT_STEPS.md) | 5-minute deployment guide |
+| [VERCEL_DEPLOYMENT_GUIDE.md](VERCEL_DEPLOYMENT_GUIDE.md) | Detailed deployment instructions |
+| [ADMIN_PANEL_GUIDE.md](ADMIN_PANEL_GUIDE.md) | How to use admin panel |
+| [POST_DEPLOYMENT_CHECKLIST.md](POST_DEPLOYMENT_CHECKLIST.md) | Verification checklist |
+
+## 🚀 Quick Deployment
+
+### Deploy to Vercel (Recommended)
+
+1. **Push to GitHub**
    ```bash
-   git clone <repository-url>
-   cd shree-krishna-dham-colony
+   git add .
+   git commit -m "Ready for deployment"
+   git push origin main
    ```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+2. **Import to Vercel**
+   - Go to https://vercel.com
+   - Import your GitHub repository
+   - Click "Deploy"
 
-3. **Start development server**
-   ```bash
-   npm run dev
-   ```
+3. **Add Environment Variables**
+   - Go to Settings → Environment Variables
+   - Add all Firebase credentials (see `.env.example`)
+   - Redeploy
 
-4. **Build for production**
-   ```bash
-   npm run build
-   ```
+4. **Setup Firebase**
+   - Enable Authentication (Email/Password)
+   - Create admin user
+   - Update Firestore security rules (see `firestore.rules`)
 
-5. **Preview production build**
-   ```bash
-   npm run preview
-   ```
+**Full guide:** [QUICK_DEPLOYMENT_STEPS.md](QUICK_DEPLOYMENT_STEPS.md)
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create `.env.local` file with your Firebase credentials:
+
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
+
+See `.env.example` for the actual values.
+
+### Firebase Setup
+
+1. **Enable Authentication**
+   - Go to Firebase Console
+   - Enable Email/Password authentication
+   - Create admin user
+
+2. **Update Security Rules**
+   - Copy content from `firestore.rules`
+   - Paste in Firestore Database → Rules
+   - Publish
+
+3. **Create Collections**
+   - `plots` - For plot data
+   - `zones` - For location zones
+   - `inquiries` - For customer inquiries
+   - `bookings` - For quick bookings
+
+## 🎯 Admin Panel Access
+
+### Local Development
+- **URL:** http://localhost:5173/admin
+- **Login:** Use Firebase credentials
+
+### Production
+- **URL:** https://shreekrishnadham.in/admin
+- **Login:** admin@shreekrishnadham.in
+
+### Admin Features
+1. **Location Zones** - Create zones with custom pricing
+2. **Plot Management** - Add/edit plots with coordinates
+3. **Inquiry Dashboard** - View and manage inquiries
+
+**Full guide:** [ADMIN_PANEL_GUIDE.md](ADMIN_PANEL_GUIDE.md)
 
 ## 🎨 Customization
 
-### Update Plot Data
-Edit `src/data/plotData.js` to modify:
-- Plot positions, sizes, and prices
-- Plot availability status (available/sold/booked)
-- Road configurations
-- Plot statistics
+### Update Contact Numbers
+Current numbers: 8279529681, 7830836785, 6396913427, 9917732395
+
+Search and replace in:
+- `src/components/Navbar.jsx`
+- `src/components/Hero.jsx`
+- `src/components/Footer.jsx`
+- `src/components/WhatsAppButton.jsx`
+- `src/components/ContactForm.jsx`
 
 ### Update Colors
-Edit `tailwind.config.js` to change the color scheme:
+Edit `tailwind.config.js`:
 ```javascript
 colors: {
   saffron: '#E8651A',  // Primary color
@@ -74,91 +177,113 @@ colors: {
 }
 ```
 
-### Update Contact Information
-- WhatsApp number: Search for `919876543210` and replace
-- Email: Search for `info@shreekrishnadham.com` and replace
-- Address: Update in Footer and ContactForm components
+### Update Sitemap Image
+Replace `public/newSitemap.png` with your sitemap image.
 
-### Update Images
-Replace placeholder images in:
-- `src/components/Gallery.jsx` - Update image URLs
-- Add actual site photos and rendered views
+### Update Video Tour
+Edit YouTube link in `src/components/VideoWalkthrough.jsx`
 
-## 📱 WhatsApp Integration
+## 📱 Features Breakdown
 
-The website includes WhatsApp integration for:
-- Direct plot inquiries
-- Quick message templates
-- Form submission notifications
+### Interactive Sitemap
+- Click on zones to see price ranges
+- Click on plots to see details
+- Color-coded status (Green/Red/Yellow)
+- Sold plots show owner name (no price)
 
-Update the phone number in:
-- `src/components/WhatsAppButton.jsx`
-- `src/components/Walkthrough3D.jsx`
-- `src/components/InteractivePlotMap.jsx`
-- `src/components/ContactForm.jsx`
+### Quick Booking
+- 4-field form (Name, Phone, Plot Preference, Budget)
+- Instant WhatsApp integration
+- Success animation
+- ₹5,000 token amount
 
-## 🗺️ Google Maps
+### Plot Inquiry
+- Detailed inquiry form
+- Saves to Firebase
+- Admin can view in dashboard
+- WhatsApp notification
 
-Update the Google Maps embed URL in `src/components/Location.jsx` with your actual colony coordinates.
+### Admin Dashboard
+- Real-time plot updates
+- Visual coordinate picker
+- Inquiry management
+- Status tracking
 
-## 🚀 Deployment
+## 🔐 Security
 
-### Vercel (Recommended)
-```bash
-npm install -g vercel
-vercel
-```
+- Firebase Authentication for admin access
+- Firestore security rules restrict write access
+- Environment variables for sensitive data
+- HTTPS enforced on Vercel
+- No API keys exposed in frontend
 
-### Netlify
-```bash
-npm run build
-# Upload 'dist' folder to Netlify
-```
+## 📊 SEO Features
 
-### Manual Hosting
-```bash
-npm run build
-# Upload 'dist' folder to your hosting provider
-```
+- ✅ Custom favicon
+- ✅ Meta tags (title, description, keywords)
+- ✅ Open Graph tags (Facebook)
+- ✅ Twitter Card tags
+- ✅ JSON-LD structured data
+- ✅ Sitemap.xml
+- ✅ Robots.txt
+- ✅ Canonical URL
 
-## 📊 Supabase Setup (Optional)
+**Target keyword:** "shree krishna dham colony baheri"
 
-1. Create a Supabase project at https://supabase.com
-2. Create a `leads` table with columns:
-   - id (uuid, primary key)
-   - name (text)
-   - phone (text)
-   - email (text)
-   - city (text)
-   - plot_interest (text)
-   - budget (text)
-   - message (text)
-   - created_at (timestamp)
+## 🐛 Troubleshooting
 
-3. Add Supabase credentials to `.env`:
-   ```
-   VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_anon_key
-   ```
+### Admin panel not working
+- Check environment variables in Vercel
+- Verify Firebase Authentication is enabled
+- Check Firestore security rules
 
-4. Update `src/components/ContactForm.jsx` to use Supabase client
+### Plots not saving
+- Verify Firebase connection
+- Check browser console for errors
+- Ensure coordinates are saved
 
-## 🎯 Performance Optimization
+### Forms not submitting
+- Check Firebase Firestore rules
+- Verify network connection
+- Check browser console
 
-- Images are lazy-loaded
-- 3D scene uses efficient low-poly models
-- Code splitting with React.lazy (can be added)
-- Tailwind CSS purges unused styles in production
+**Full troubleshooting:** [VERCEL_DEPLOYMENT_GUIDE.md](VERCEL_DEPLOYMENT_GUIDE.md)
 
-## 📝 License
+## 📞 Contact
 
-This project is proprietary and confidential.
+**Business Inquiries:**
+- Phone: 8279529681, 7830836785
+- WhatsApp: 8279529681
+- Website: shreekrishnadham.in
 
-## 🤝 Support
+**Developer:**
+- Kapil Gangwar
+- Email: admin@shreekrishnadham.in
 
-For support, email: info@shreekrishnadham.com
-Phone: +91 98765 43210
+## 🎓 Previous Projects
+
+- Ashok Vihar Colony, Baheri
+- Brij Dham Colony, Baheri
+- Gandhi Ashram, Baheri
+
+## 📄 License
+
+© 2026 Shree Krishna Dham Colony. All rights reserved.
+
+## 🙏 Acknowledgments
+
+**Location:** Baheri, Bareilly, Uttar Pradesh
+**Designed & Developed with ❤️ by Kapil Gangwar**
 
 ---
 
-**Built with ❤️ for Real Estate Excellence**
+## ✅ Ready to Deploy?
+
+1. Read [DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md) for overview
+2. Follow [QUICK_DEPLOYMENT_STEPS.md](QUICK_DEPLOYMENT_STEPS.md) for setup
+3. Use [POST_DEPLOYMENT_CHECKLIST.md](POST_DEPLOYMENT_CHECKLIST.md) to verify
+
+**Time to deploy:** ~30 minutes
+**Time to master admin:** ~1 hour
+
+🚀 **Let's launch Shree Krishna Dham Colony!** 🚀

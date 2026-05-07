@@ -50,7 +50,7 @@ const Hero = () => {
           >
             {/* Primary CTA - WhatsApp */}
             <a
-              href="https://wa.me/919876543210?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
+              href="https://wa.me/918279529681?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
               target="_blank"
               rel="noopener noreferrer"
               className="group w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-full text-base md:text-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -61,7 +61,7 @@ const Hero = () => {
             
             {/* Secondary CTA - Call */}
             <a
-              href="tel:+919876543210"
+              href="tel:+918279529681"
               className="group w-full sm:w-auto bg-saffron hover:bg-gold text-white px-6 py-4 rounded-full text-base md:text-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Phone size={20} className="group-hover:animate-pulse" />
@@ -109,15 +109,15 @@ const Hero = () => {
           >
             <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
               <FileCheck size={14} />
-              EMI उपलब्ध
-            </span>
-            <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
-              <FileCheck size={14} />
               रजिस्ट्री तुरंत
             </span>
             <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
               <FileCheck size={14} />
               लोन सुविधा
+            </span>
+            <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
+              <FileCheck size={14} />
+              Free Site Visit
             </span>
           </motion.div>
         </motion.div>

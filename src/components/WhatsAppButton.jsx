@@ -4,7 +4,14 @@ import { MessageCircle, X } from 'lucide-react'
 
 const WhatsAppButton = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const phoneNumber = '919876543210'
+  // Multiple contact numbers
+  const phoneNumbers = [
+    { number: '918279529681', display: '+91 82795 29681' },
+    { number: '917830836785', display: '+91 78308 36785' },
+    { number: '916396913427', display: '+91 63969 13427' },
+    { number: '919917732395', display: '+91 99177 32395' }
+  ]
+  const primaryPhone = phoneNumbers[0].number
 
   const quickMessages = [
     'मैं साइट विजिट बुक करना चाहता हूं',

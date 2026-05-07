@@ -1,0 +1,12 @@
+# robots.txt for shreekrishnadham.in
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /coordinate-picker
+
+# Sitemap
+Sitemap: https://shreekrishnadham.in/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1

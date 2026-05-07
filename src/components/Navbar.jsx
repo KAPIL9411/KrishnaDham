@@ -52,13 +52,13 @@ const Navbar = () => {
             {/* Mobile Quick Actions */}
             <div className="flex items-center gap-2 md:hidden">
               <a
-                href="tel:+919876543210"
+                href="tel:+918279529681"
                 className="bg-saffron text-white p-2 rounded-full shadow-lg"
               >
                 <Phone size={16} />
               </a>
               <a
-                href="https://wa.me/919876543210?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
+                href="https://wa.me/918279529681?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-500 text-white p-2 rounded-full shadow-lg"
@@ -86,14 +86,14 @@ const Navbar = () => {
               ))}
               <div className="flex items-center gap-2">
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+918279529681"
                   className="bg-saffron text-white px-4 py-2 rounded-full hover:bg-gold transition-colors font-semibold text-sm flex items-center gap-2"
                 >
                   <Phone size={16} />
                   <span className="hidden lg:inline">कॉल करें</span>
                 </a>
                 <a
-                  href="https://wa.me/919876543210?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
+                  href="https://wa.me/918279529681?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors font-semibold text-sm flex items-center gap-2"
@@ -124,7 +124,7 @@ const Navbar = () => {
                 {/* Mobile CTA Buttons */}
                 <div className="px-4 pt-4 space-y-3">
                   <a
-                    href="tel:+919876543210"
+                    href="tel:+918279529681"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center justify-center gap-2 w-full bg-saffron text-white py-3 rounded-full font-semibold"
                   >
@@ -132,7 +132,7 @@ const Navbar = () => {
                     तुरंत कॉल करें
                   </a>
                   <a
-                    href="https://wa.me/919876543210?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
+                    href="https://wa.me/918279529681?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -166,14 +166,14 @@ const Navbar = () => {
             <span className="text-xs font-medium">प्लॉट मैप</span>
           </a>
           <a
-            href="tel:+919876543210"
+            href="tel:+918279529681"
             className="flex flex-col items-center py-2 px-1 text-saffron hover:text-gold transition-colors"
           >
             <Phone size={20} className="mb-1" />
             <span className="text-xs font-medium">कॉल</span>
           </a>
           <a
-            href="https://wa.me/919876543210?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
+            href="https://wa.me/918279529681?text=नमस्ते, मुझे श्री कृष्णा धाम कॉलोनी के बारे में जानकारी चाहिए"
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col items-center py-2 px-1 text-green-600 hover:text-green-700 transition-colors"

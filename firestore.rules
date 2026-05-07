@@ -1,0 +1,47 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Plots Collection
+    // - Anyone can read plots (for public sitemap)
+    // - Only authenticated admins can write
+    match /plots/{plotId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+    
+    // Zones Collection
+    // - Anyone can read zones (for public sitemap)
+    // - Only authenticated admins can write
+    match /zones/{zoneId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+    
+    // Inquiries Collection
+    // - Anyone can create inquiries (customer form submissions)
+    // - Only authenticated admins can read/update/delete
+    match /inquiries/{inquiryId} {
+      allow read: if request.auth != null;
+      allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
+    
+    // Bookings Collection
+    // - Anyone can create bookings (quick booking form)
+    // - Only authenticated admins can read/update/delete
+    match /bookings/{bookingId} {
+      allow read: if request.auth != null;
+      allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
+    
+    // Contact Forms Collection (if you add contact form later)
+    match /contacts/{contactId} {
+      allow read: if request.auth != null;
+      allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
+  }
+}

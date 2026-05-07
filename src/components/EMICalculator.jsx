@@ -295,7 +295,7 @@ const EMICalculator = () => {
 
             {/* CTA */}
             <a
-              href="https://wa.me/919876543210?text=नमस्ते, मैंने EMI Calculator देखा है। मुझे loan के बारे में जानकारी चाहिए।"
+              href="https://wa.me/918279529681?text=नमस्ते, मैंने EMI Calculator देखा है। मुझे loan के बारे में जानकारी चाहिए।"
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full bg-green-500 hover:bg-green-600 text-white text-center px-6 py-4 rounded-full font-semibold transition-all shadow-lg"

@@ -20,9 +20,6 @@ const Footer = () => {
             <p className="text-ivory/70 mb-4 text-sm md:text-base">
               बहेड़ी, बरेली में आधुनिक सुविधाओं और क्लियर टाइटल के साथ प्रीमियम आवासीय प्लॉट्स।
             </p>
-            <p className="text-xs md:text-sm text-ivory/60">
-              RERA पंजीकरण: UP-RERA-XXXXX
-            </p>
           </div>
 
           {/* Mobile-First Quick Links */}
@@ -30,11 +27,10 @@ const Footer = () => {
             <h4 className="text-lg md:text-xl font-display font-bold mb-4">त्वरित लिंक</h4>
             <ul className="space-y-2">
               <li><a href="#hero" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">होम</a></li>
-              <li><a href="#walkthrough" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">3D टूर</a></li>
               <li><a href="#plot-map" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">प्लॉट मैप</a></li>
               <li><a href="#about" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">परिचय</a></li>
               <li><a href="#amenities" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">सुविधाएं</a></li>
-              <li><a href="#pricing" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">मूल्य</a></li>
+              <li><a href="#location" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">लोकेशन</a></li>
             </ul>
           </div>
 
@@ -45,8 +41,12 @@ const Footer = () => {
               <li className="flex items-start gap-2">
                 <Phone size={16} className="text-saffron mt-1 flex-shrink-0" />
                 <div>
-                  <a href="tel:+919876543210" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">
-                    +91 98765 43210
+                  <a href="tel:+918279529681" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">
+                    +91 82795 29681
+                  </a>
+                  <br />
+                  <a href="tel:+917830836785" className="text-ivory/70 hover:text-saffron transition-colors text-sm md:text-base">
+                    +91 78308 36785
                   </a>
                 </div>
               </li>
@@ -59,7 +59,7 @@ const Footer = () => {
               <li className="flex items-start gap-2">
                 <MapPin size={16} className="text-saffron mt-1 flex-shrink-0" />
                 <span className="text-ivory/70 text-sm md:text-base">
-                  नादेली बहापुर रोड, बहेड़ी, बरेली, UP - 243201
+                  नदेली बहापुर रोड, बहेड़ी, बरेली, UP - 243201
                 </span>
               </li>
             </ul>
@@ -106,9 +106,9 @@ const Footer = () => {
             © {currentYear} श्री कृष्णा धाम कॉलोनी। सभी अधिकार सुरक्षित।
           </p>
           <p className="text-xs md:text-sm text-ivory/50 mt-2 flex items-center justify-center gap-1">
-            रियल एस्टेट उत्कृष्टता के लिए 
+            Designed & Developed with 
             <Heart size={14} className="text-red-400" />
-            के साथ डिज़ाइन और विकसित
+            by Kapil Gangwar
           </p>
         </div>
       </div>

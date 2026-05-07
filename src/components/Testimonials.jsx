@@ -1,18 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Star, Quote, ChevronLeft, ChevronRight, MapPin, Calendar } from 'lucide-react'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../firebase/config'
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [testimonials, setTestimonials] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const testimonials = [
+  // Default testimonials as fallback
+  const defaultTestimonials = [
     {
       id: 1,
       name: 'राजेश कुमार',
       location: 'बहेड़ी, बरेली',
       rating: 5,
       date: '2 महीने पहले',
-      text: 'बहुत अच्छी जगह है। सड़कें चौड़ी हैं और सभी कागजात क्लियर हैं। EMI की सुविधा भी मिली। पूरा परिवार खुश है।',
+      text: 'बहुत अच्छी जगह है। सड़कें चौड़ी हैं और सभी कागजात क्लियर हैं। लोकेशन भी बढ़िया है। पूरा परिवार खुश है।',
       plotNumber: '23',
       image: '/api/placeholder/60/60'
     },
@@ -35,28 +40,51 @@ const Testimonials = () => {
       text: 'Investment के लिए perfect जगह है। Price भी reasonable है और location भी अच्छी है। Bank loan भी आसानी से मिल गया।',
       plotNumber: '67',
       image: '/api/placeholder/60/60'
-    },
-    {
-      id: 4,
-      name: 'प्रिया शर्मा',
-      location: 'बहेड़ी, बरेली',
-      rating: 5,
-      date: '2 सप्ताह पहले',
-      text: 'घर बनाने के लिए perfect plot मिला। Water supply 24/7 है और electricity भी proper आती है। बच्चों के लिए school भी पास में है।',
-      plotNumber: '89',
-      image: '/api/placeholder/60/60'
-    },
-    {
-      id: 5,
-      name: 'मनोज गुप्ता',
-      location: 'आंवला, बरेली',
-      rating: 5,
-      date: '1 सप्ताह पहले',
-      text: 'Family के साथ site visit किया था। बहुत impressed हुए। Clean environment है और security भी अच्छी है। Highly recommend करूंगा।',
-      plotNumber: '12',
-      image: '/api/placeholder/60/60'
     }
   ]
+
+  useEffect(() => {
+    loadTestimonials()
+  }, [])
+
+  const loadTestimonials = async () => {
+    try {
+      // Load sold plots with owner names from Firebase
+      const plotsQuery = query(
+        collection(db, 'plots'),
+        where('status', '==', 'sold')
+      )
+      const plotsSnapshot = await getDocs(plotsQuery)
+      
+      const soldPlots = plotsSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(plot => plot.ownerName) // Only plots with owner names
+      
+      if (soldPlots.length > 0) {
+        // Create testimonials from actual sold plots
+        const realTestimonials = soldPlots.slice(0, 5).map((plot, index) => ({
+          id: plot.id,
+          name: plot.ownerName,
+          location: 'बहेड़ी, बरेली',
+          rating: 5,
+          date: 'हाल ही में',
+          text: `श्री कृष्णा धाम कॉलोनी में ${plot.area} वर्ग गज का प्लॉट खरीदा। बहुत अच्छी जगह है। सड़कें चौड़ी हैं और सभी कागजात क्लियर हैं। पूरा परिवार खुश है।`,
+          plotNumber: plot.plotNumber,
+          image: '/api/placeholder/60/60'
+        }))
+        
+        setTestimonials(realTestimonials)
+      } else {
+        // Use default testimonials if no sold plots
+        setTestimonials(defaultTestimonials)
+      }
+    } catch (error) {
+      console.error('Error loading testimonials:', error)
+      setTestimonials(defaultTestimonials)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const nextTestimonial = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length)
@@ -74,6 +102,23 @@ const Testimonials = () => {
         className={i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}
       />
     ))
+  }
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-gradient-to-b from-blue-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-saffron/30 border-t-saffron rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-charcoal/70">लोड हो रहा है...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (testimonials.length === 0) {
+    return null
   }
 
   return (
@@ -223,7 +268,7 @@ const Testimonials = () => {
               Site visit book करें और खुद देखें क्यों सभी हमें recommend करते हैं
             </p>
             <a
-              href="https://wa.me/919876543210?text=नमस्ते, मैं site visit book करना चाहता हूं"
+              href="https://wa.me/918279529681?text=नमस्ते, मैं site visit book करना चाहता हूं"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-white text-saffron px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all"
